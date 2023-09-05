@@ -38,8 +38,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:social_share/social_share.dart';
 import 'package:toast/toast.dart';
+import 'package:whatsapp_share/whatsapp_share.dart';
 
 class ProductDetails extends StatefulWidget {
   int id;
@@ -98,6 +100,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void initState() {
+    print("product details Screen");
     _ColorAnimationController =
         AnimationController(vsync: this, duration: Duration(seconds: 0));
 
@@ -780,6 +783,13 @@ class _ProductDetailsState extends State<ProductDetails>
       onPopped(value);
     });
   }
+  Future<void> share() async {
+    await WhatsappShare.share(
+      text: 'Whatsapp share text',
+      linkUrl: 'https://flutter.dev/',
+      phone: '9458925957',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -908,8 +918,13 @@ class _ProductDetailsState extends State<ProductDetails>
                       ),
                       SizedBox(width: 15),
                       InkWell(
-                        onTap: () {
-                          onPressShare(context);
+                        onTap: () async{
+                          print("share button");
+                         await Share.share('check out my website https://example.com');
+
+                          // share();
+
+                          // onPressShare(context);
                         },
                         child: Container(
                           decoration:
@@ -2052,7 +2067,10 @@ class _ProductDetailsState extends State<ProductDetails>
       leading: Builder(
         builder: (context) => IconButton(
           icon: Icon(CupertinoIcons.arrow_left, color: MyTheme.dark_grey),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            print("product details Screen");
+            Navigator.of(context).pop();
+          },
         ),
       ),
       title: Container(
@@ -2125,6 +2143,7 @@ class _ProductDetailsState extends State<ProductDetails>
               ),
             ),
           ),
+
         ),
         BottomNavigationBarItem(
           label: "",

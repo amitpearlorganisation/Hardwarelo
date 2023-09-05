@@ -31,6 +31,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:social_share/social_share.dart';
 import 'package:toast/toast.dart';
 
@@ -1676,9 +1677,12 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails>
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
           child: IconButton(
-            icon: Icon(Icons.share_outlined, color: MyTheme.dark_grey),
+            icon: Icon(Icons.share_outlined, color: Colors.green, ),
             onPressed: () {
+              print("Share botton");
               onPressShare(context);
+              // Share.share('check out my website https://example.com');
+
             },
           ),
         ),
