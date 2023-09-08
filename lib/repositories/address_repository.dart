@@ -88,6 +88,7 @@ class AddressRepository {
           "App-Language": app_language.$
         },
         body: post_body);
+    print("test----->response ${response.body}");
 
     bool checkResult = ResponseCheck.apply(response.body);
 
@@ -225,7 +226,7 @@ class AddressRepository {
     if(!checkResult)
       return responseCheckModelFromJson(response.body);
 
-
+         print("------state ${response.body}");
     return cityResponseFromJson(response.body);
   }
 
@@ -241,7 +242,7 @@ class AddressRepository {
     if(!checkResult)
       return responseCheckModelFromJson(response.body);
 
-
+    print("get country by state ${response.body}");
     return myStateResponseFromJson(response.body);
   }
 
@@ -253,7 +254,7 @@ class AddressRepository {
 
     if(!checkResult)
       return responseCheckModelFromJson(response.body);
-
+            print("country list ${response.body}");
     return countryResponseFromJson(response.body);
   }
 

@@ -60,7 +60,7 @@ class _AddressState extends State<Address> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+      print("userLogiId======${user_id.$}");
     if (is_logged_in.$ == true) {
       fetchAll();
     }
@@ -248,7 +248,7 @@ class _AddressState extends State<Address> {
     var postal_code = _postalCodeController.text.toString();
     var phone = _phoneController.text.toString();
 
-    if (address == "") {
+    if (_addressController.text.isEmpty || _addressController.text=="") {
       ToastComponent.showDialog(
           AppLocalizations.of(context).enter_address_ucf,
           gravity: Toast.center,
@@ -256,7 +256,7 @@ class _AddressState extends State<Address> {
       return;
     }
 
-    if (_selected_country == null) {
+    if (_selected_country == "" ||_selected_country==null) {
       ToastComponent.showDialog(
           AppLocalizations.of(context).select_a_country,
           gravity: Toast.center,
@@ -264,7 +264,7 @@ class _AddressState extends State<Address> {
       return;
     }
 
-    if (_selected_state == null) {
+    if (_selected_state == null || _selected_state=="") {
       ToastComponent.showDialog(
           AppLocalizations.of(context).select_a_state,
           gravity: Toast.center,
@@ -272,13 +272,14 @@ class _AddressState extends State<Address> {
       return;
     }
 
-    if (_selected_city == null) {
+    if (_selected_city == null || _selected_city == "") {
       ToastComponent.showDialog(
           AppLocalizations.of(context).select_a_city,
           gravity: Toast.center,
           duration: Toast.lengthLong);
       return;
     }
+
 
     var addressAddResponse = await AddressRepository().getAddressAddResponse(
         address: address,
@@ -639,7 +640,11 @@ class _AddressState extends State<Address> {
                               );
                             },
                             onSuggestionSelected: (country) {
-                              onSelectCountryDuringAdd(country, setModalState);
+                              setState(() {
+                                _countryController.text = country.name;
+                                // Call your function to handle the selected city here if needed
+                                onSelectCountryDuringAdd(country, setModalState);
+                              });
                             },
                             textFieldConfiguration: TextFieldConfiguration(
                               onTap: () {},
@@ -784,8 +789,11 @@ class _AddressState extends State<Address> {
                               );
                             },
                             onSuggestionSelected: (city) {
-                              onSelectCityDuringAdd(city, setModalState);
-                            },
+                              setState(() {
+                                _cityController.text = city.name;
+                                // Call your function to handle the selected city here if needed
+                                onSelectCityDuringAdd(city, setModalState);
+                              });                            },
                             textFieldConfiguration: TextFieldConfiguration(
                               onTap: () {},
                               //autofocus: true,
