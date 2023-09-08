@@ -41,7 +41,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:social_share/social_share.dart';
 import 'package:toast/toast.dart';
-import 'package:whatsapp_share/whatsapp_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetails extends StatefulWidget {
   int id;
@@ -455,55 +455,60 @@ class _ProductDetailsState extends State<ProductDetails>
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 8.0),
+                      //   child: Btn.minWidthFixHeight(
+                      //     minWidth: 75,
+                      //     height: 26,
+                      //     color: Color.fromRGBO(253, 253, 253, 1),
+                      //     shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(8.0),
+                      //         side:
+                      //             BorderSide(color: Colors.black, width: 1.0)),
+                      //     child: Text(
+                      //       AppLocalizations.of(context).copy_product_link_ucf,
+                      //       style: TextStyle(
+                      //         color: MyTheme.medium_grey,
+                      //       ),
+                      //     ),
+                      //     onPressed: () {
+                      //       onCopyTap(setState);
+                      //       SocialShare.copyToClipboard(
+                      //           text: _productDetails.link);
+                      //     },
+                      //   ),
+                      // ),
+                      // _showCopied
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.only(bottom: 8.0),
+                      //         child: Text(
+                      //           AppLocalizations.of(context).copied_ucf,
+                      //           style: TextStyle(
+                      //               color: MyTheme.medium_grey, fontSize: 12),
+                      //         ),
+                      //       )
+                      //     : Container(),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Btn.minWidthFixHeight(
-                          minWidth: 75,
-                          height: 26,
-                          color: Color.fromRGBO(253, 253, 253, 1),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              side:
-                                  BorderSide(color: Colors.black, width: 1.0)),
-                          child: Text(
-                            AppLocalizations.of(context).copy_product_link_ucf,
-                            style: TextStyle(
-                              color: MyTheme.medium_grey,
-                            ),
-                          ),
-                          onPressed: () {
+                        child: IconButton(
+                          // minWidth: 75,
+                          // height: 26,
+                          color: Colors.blue,
+                          // shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(8.0),
+                          //     side:
+                          //         BorderSide(color: Colors.black, width: 1.0)),
+                          // child: Text(
+                          //   AppLocalizations.of(context).share_options_ucf,
+                          //   style: TextStyle(color: Colors.white),
+                          // ),
+                          icon: Image.asset("assets/whatsappIcon.png", width: 80, height: 80,fit: BoxFit.cover,),
+                          onPressed: () async {
                             onCopyTap(setState);
                             SocialShare.copyToClipboard(
                                 text: _productDetails.link);
-                          },
-                        ),
-                      ),
-                      _showCopied
-                          ? Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                AppLocalizations.of(context).copied_ucf,
-                                style: TextStyle(
-                                    color: MyTheme.medium_grey, fontSize: 12),
-                              ),
-                            )
-                          : Container(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Btn.minWidthFixHeight(
-                          minWidth: 75,
-                          height: 26,
-                          color: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              side:
-                                  BorderSide(color: Colors.black, width: 1.0)),
-                          child: Text(
-                            AppLocalizations.of(context).share_options_ucf,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {
-                            SocialShare.shareOptions(_productDetails.link);
+                           await launchWhatsApp(url: _productDetails.link);
+                            // SocialShare.shareOptions(_productDetails.link);
                           },
                         ),
                       ),
@@ -512,40 +517,29 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
               ),
               actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: app_language_rtl.$
-                          ? EdgeInsets.only(left: 8.0)
-                          : EdgeInsets.only(right: 8.0),
-                      child: Btn.minWidthFixHeight(
-                        minWidth: 75,
-                        height: 30,
-                        color: Color.fromRGBO(253, 253, 253, 1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(
-                                color: MyTheme.font_grey, width: 1.0)),
-                        child: Text(
-                          "CLOSE",
-                          style: TextStyle(
-                            color: MyTheme.font_grey,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
-                      ),
-                    ),
-                  ],
-                )
-              ],
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),              ],
             );
           });
         });
   }
+  void launchWhatsApp({String url}) async {
+    final phoneNumber = '9101831548'; // Replace with the recipient's phone number
+    final message = url??""; // Replace with your message
 
+    final whatsappUrl = "https://wa.me/$phoneNumber/?text=${Uri.encodeFull(message)}";
+
+    if (await canLaunch(whatsappUrl)) {
+      await launch(whatsappUrl);
+    } else {
+      // Handle the error here
+      print('Could not launch WhatsApp');
+    }
+  }
   onTapSellerChat() {
     return showDialog(
         context: context,
@@ -783,13 +777,9 @@ class _ProductDetailsState extends State<ProductDetails>
       onPopped(value);
     });
   }
-  Future<void> share() async {
-    await WhatsappShare.share(
-      text: 'Whatsapp share text',
-      linkUrl: 'https://flutter.dev/',
-      phone: '9458925957',
-    );
-  }
+  // Future<void> share() async {
+  //   await S
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -920,11 +910,11 @@ class _ProductDetailsState extends State<ProductDetails>
                       InkWell(
                         onTap: () async{
                           print("share button");
-                         await Share.share('check out my website https://example.com');
+                         // await Share.share('check out my website https://example.com');
 
                           // share();
 
-                          // onPressShare(context);
+                          onPressShare(context);
                         },
                         child: Container(
                           decoration:
@@ -2096,6 +2086,7 @@ class _ProductDetailsState extends State<ProductDetails>
           child: IconButton(
             icon: Icon(Icons.share_outlined, color: MyTheme.dark_grey),
             onPressed: () {
+              // Share.share("lkkkkkkkk");
               onPressShare(context);
             },
           ),

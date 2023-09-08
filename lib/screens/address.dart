@@ -43,7 +43,7 @@ class _AddressState extends State<Address> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _cityController = TextEditingController();
   TextEditingController _stateController = TextEditingController();
-  TextEditingController _countryController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
 
   //for update purpose
   List<TextEditingController> _addressControllerListForUpdate = [];
@@ -124,7 +124,7 @@ class _AddressState extends State<Address> {
     _postalCodeController.clear();
     _phoneController.clear();
 
-    _countryController.clear();
+    countryController.clear();
     _stateController.clear();
     _cityController.clear();
 
@@ -363,9 +363,11 @@ class _AddressState extends State<Address> {
   }
 
   onSelectCountryDuringAdd(country, setModalState) {
+    print("onSelectCountryDurringAdd");
     if (_selected_country != null && country.id == _selected_country.id) {
+
       setModalState(() {
-        _countryController.text = country.name;
+        countryController.text = country.name;
       });
       return;
     }
@@ -375,7 +377,7 @@ class _AddressState extends State<Address> {
     setState(() {});
 
     setModalState(() {
-      _countryController.text = country.name;
+      countryController.text = country.name;
       _stateController.text = "";
       _cityController.text = "";
     });
@@ -603,8 +605,10 @@ class _AddressState extends State<Address> {
                           height: 40,
                           child: TypeAheadField(
                             suggestionsCallback: (name) async {
+                              print("this is suggestion call back fun -------");
                               var countryResponse = await AddressRepository()
                                   .getCountryList(name: name);
+                              print("=============>${countryResponse.countries}");
                               return countryResponse.countries;
                             },
                             loadingBuilder: (context) {
@@ -619,6 +623,7 @@ class _AddressState extends State<Address> {
                               );
                             },
                             itemBuilder: (context, country) {
+                              print("item is build");
                               //print(suggestion.toString());
                               return ListTile(
                                 dense: true,
@@ -629,6 +634,7 @@ class _AddressState extends State<Address> {
                               );
                             },
                             noItemsFoundBuilder: (context) {
+                              print("no item is found");
                               return Container(
                                 height: 50,
                                 child: Center(
@@ -639,17 +645,24 @@ class _AddressState extends State<Address> {
                                             color: MyTheme.medium_grey))),
                               );
                             },
-                            onSuggestionSelected: (country) {
+
+                              onSuggestionSelected: (country) {
+                              print("countries----");
                               setState(() {
-                                _countryController.text = country.name;
+                                print("setState funtion is working");
+                                countryController.text = country;
+                                print(countryController.text);
                                 // Call your function to handle the selected city here if needed
                                 onSelectCountryDuringAdd(country, setModalState);
                               });
+                              FocusScope.of(context).unfocus();
                             },
                             textFieldConfiguration: TextFieldConfiguration(
-                              onTap: () {},
+                              onTap: () {
+                                print("you can tab here");
+                              },
                               //autofocus: true,
-                              controller: _countryController,
+                              controller: countryController,
                               onSubmitted: (txt) {
                                 // keep this blank
                               },
